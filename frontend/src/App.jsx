@@ -12,32 +12,41 @@ function App() {
 const[customers,setCustomer]=useState([])
 const{
 
-  register,handleSubmit,formState:{errors}
+  register,handleSubmit,formState:{errors},reset
 
 }=useForm()
 
-
-
-// this is for getting data from api  
-useEffect(()=>{
-     api.get().then((res)=>{
+const getInfo=()=>{
+  api.get().then((res)=>{
       // i set data 
       setCustomer(res.data);
       console.log(res.data)
      }
      )
+}
+
+// this is for getting data from api  
+useEffect(()=>{
+     getInfo();
     
 },[])
 
+
+const Onsubmit=async(data)=>{
+  await api.post("",data);
+  reset();
+  getInfo();
+
+}
 
   // const [count, setCount] = useState(0)
 
   return (
 
     <div>
-      {/* this the the taking input sector  */}
+      {/* this is the taking input sector  */}
 
-      <form action="" onSubmit={handleSubmit()}>
+      <form action="" onSubmit={handleSubmit(Onsubmit)}>
         <label htmlFor='name'>Name</label>
         <input type='text'  name='name' {...register('name',{required : true})}/>
         {errors.name && <span>This field is required</span>}
