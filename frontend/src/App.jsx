@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 
@@ -37,10 +37,26 @@ useEffect(()=>{
     <div>
       {/* this the the taking input sector  */}
 
-      <form action="" onClick={handleSubmit()}>
+      <form action="" onSubmit={handleSubmit()}>
         <label htmlFor='name'>Name</label>
         <input type='text'  name='name' {...register('name',{required : true})}/>
         {errors.name && <span>This field is required</span>}
+
+        
+
+        <label htmlFor='email'>Email</label>
+        <input type='email' name='email' {...register('email',{required:true})}/>
+        {errors.email &&<span>Email is required</span>}
+
+
+        <label htmlFor='address'>Address</label>
+        <input type='text' name='address' {...register('address',{required:true})}/>
+        {errors.email &&<span>Address  is required</span>}
+
+        <label htmlFor='Phone'>Phone Number</label>
+        <input type='text' name='Phone' {...register('Phone',{required:true})}/>
+        {errors.email &&<span>Phone Number is required</span>}
+
 
 
         <button type='submit'>Add Customer</button>
