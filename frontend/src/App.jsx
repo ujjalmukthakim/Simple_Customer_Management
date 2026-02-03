@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import api from './api/api';
+import api from './api/api'; 
 
 function App() {
   const [customers, setCustomer] = useState([]);
+  const [editingCustomer, setEditingCustomer] = useState(null);
+
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-  const getInfo = () => {
-    api.get().then((res) => {
+  const getInfo = async () => {
+    try {
+      const res = await api.get();
       setCustomer(res.data);
-    });
+    } catch (error) {
+      console.error("Fetch failed:", error);
+    }
   };
 
   useEffect(() => {
@@ -17,9 +22,42 @@ function App() {
   }, []);
 
   const Onsubmit = async (data) => {
-    await api.post("", data);
-    reset();
-    getInfo();
+    try {
+      if (editingCustomer) {
+        await api.patch(`/${editingCustomer.id}/`, data);
+        setEditingCustomer(null); 
+      } else {
+        await api.post('', data);
+      }
+      reset({
+      name: "",
+      email: "",
+      address: "",
+      Phone: ""
+    });
+      getInfo(); 
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/${id}/`);
+      setCustomer(customers.filter(customer => customer.id !== id));
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  };
+
+  const handleEdit = (customer) => {
+    setEditingCustomer(customer);
+    reset({
+      name: customer.name,
+      email: customer.email,
+      address: customer.address,
+      Phone: customer.Phone
+    });
   };
 
   return (
@@ -58,7 +96,7 @@ function App() {
                 type="text" 
                 {...register('address', { required: "Address is required" })} 
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
-                placeholder="1202,Dhaka"
+                placeholder="1202, Dhaka"
               />
               {errors.address && <span className="text-red-500 text-xs mt-1 italic">{errors.address.message}</span>}
             </div>
@@ -79,7 +117,7 @@ function App() {
                 type="submit" 
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg transition-all duration-200 transform active:scale-95"
               >
-                Add Customer
+                {editingCustomer ? "Update Customer" : "Add Customer"}
               </button>
             </div>
           </form>
@@ -95,6 +133,8 @@ function App() {
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Edit</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Delete</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -104,6 +144,26 @@ function App() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.email}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.address}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.Phone}</td>
+
+                    {/* Edit Button */}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button 
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded"
+                        onClick={() => handleEdit(customer)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+
+                    {/* Delete Button */}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button 
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                        onClick={() => handleDelete(customer.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
