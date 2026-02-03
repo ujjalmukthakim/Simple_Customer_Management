@@ -36,7 +36,7 @@ function App() {
                 type="text" 
                 {...register('name', { required: "Name is required" })} 
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
-                placeholder="John Doe"
+                placeholder="Name.."
               />
               {errors.name && <span className="text-red-500 text-xs mt-1 italic">{errors.name.message}</span>}
             </div>
@@ -47,7 +47,7 @@ function App() {
                 type="email" 
                 {...register('email', { required: "Email is required" })} 
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
-                placeholder="john@example.com"
+                placeholder="myemail@example.com"
               />
               {errors.email && <span className="text-red-500 text-xs mt-1 italic">{errors.email.message}</span>}
             </div>
@@ -58,7 +58,7 @@ function App() {
                 type="text" 
                 {...register('address', { required: "Address is required" })} 
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
-                placeholder="123 Main St"
+                placeholder="1202,Dhaka"
               />
               {errors.address && <span className="text-red-500 text-xs mt-1 italic">{errors.address.message}</span>}
             </div>
@@ -69,7 +69,7 @@ function App() {
                 type="text" 
                 {...register('Phone', { required: "Phone is required" })} 
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition" 
-                placeholder="0123456789"
+                placeholder="+880"
               />
               {errors.Phone && <span className="text-red-500 text-xs mt-1 italic">{errors.Phone.message}</span>}
             </div>
